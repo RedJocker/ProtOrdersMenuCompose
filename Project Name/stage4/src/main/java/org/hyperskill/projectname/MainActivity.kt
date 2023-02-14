@@ -12,11 +12,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.example.playcomposecounter.ui.theme.PlayOrdersMenuTheme
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        private val listRecipesOnMenu = listOf(
+            "Fettuccine",
+            "Risotto",
+            "Gnocchi",
+            "Spaghetti",
+            "Lasagna",
+            "Steak Parmigiana"
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -27,7 +39,9 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column(Modifier.fillMaxSize()) {
                         Title(title = "Orders Menu")
-                        OrderMenuItem(itemName = "Fettuccine")
+                        listRecipesOnMenu.forEach { recipeName ->
+                            OrderMenuItem(itemName = recipeName)
+                        }
                     }
                 }
             }
@@ -63,9 +77,10 @@ class MainActivity : ComponentActivity() {
                         quantity++
 
                     }
-                })
+                }.testTag(itemName))
 
-            Text(text = "${quantity}", fontSize = 24.sp)
+
+            Text(text = "${quantity}", fontSize = 24.sp, modifier = Modifier.testTag(itemName))
 
             Text(text = "-", fontSize = 24.sp, modifier = Modifier
                 .padding(horizontal = 16.dp)
