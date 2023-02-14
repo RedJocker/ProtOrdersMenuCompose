@@ -20,6 +20,15 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
+    val menuRecipesList = listOf(
+        "Fettuccine",
+        "Risotto",
+        "Gnocchi",
+        "Spaghetti",
+        "Lasagna",
+        "Steak Parmigiana"
+    )
+
     fun SemanticsNodeInteraction.assertTextStyle(block: (style: TextStyle) -> Unit ) {
         val semanticsNode = fetchSemanticsNode()
         val config = semanticsNode.config
