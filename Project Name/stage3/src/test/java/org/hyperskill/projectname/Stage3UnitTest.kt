@@ -25,7 +25,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                 val fettuccineNode = onNodeWithText(
                     "Fettuccine", substring = false, ignoreCase = false
                 )
-                val siblings = fettuccineNode.onSiblings()
+                val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
                 val plusNode = siblings.filterToOne(hasText("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
@@ -54,9 +54,9 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
             composeTestRule.apply {
                 val fettuccineNode = onNodeWithText(
-                    "Fettuccine", substring = false, ignoreCase = false
+                    "Fettuccine", substring = false, ignoreCase = false,
                 )
-                val siblings = fettuccineNode.onSiblings()
+                val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
                 val plusNode = siblings.filterToOne(hasText("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
@@ -91,7 +91,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         style.color
                     )
                 }
-                val siblings = fettuccineNode.onSiblings()
+                val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
                 val plusNode = siblings.filterToOne(hasText("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
@@ -124,7 +124,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                     "Fettuccine", substring = false, ignoreCase = false
                 )
 
-                val siblings = fettuccineNode.onSiblings()
+                val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
                 val plusNode = siblings.filterToOne(hasText("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
@@ -171,7 +171,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                     "Fettuccine", substring = false, ignoreCase = false
                 )
 
-                val siblings = fettuccineNode.onSiblings()
+                val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
                 val minusNode = siblings.filterToOne(hasText("-"))
                     .assertExists("Fettuccine should have a sibling with text \"-\"")
                     .assertIsDisplayed()
@@ -232,7 +232,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         style.color
                     )
                 }
-                val siblings = fettuccineNode.onSiblings()
+                val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
 
                 val plusNode = siblings.filterToOne(hasText("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")

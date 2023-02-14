@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
@@ -12,6 +13,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import org.hyperskill.projectname.MainActivity
 import org.junit.Rule
+import kotlin.math.abs
 
 open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T>(clazz) {
 
@@ -63,14 +65,24 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
                 .boundsInWindow
                 .left
 
-            val nodeCenter = fetchSemanticsNode()
+            val nodeStart = fetchSemanticsNode()
                 .boundsInWindow
                 .left
 
-            rootStart to nodeCenter
+            rootStart to nodeStart
         }
 
         block(rootStart, nodeStart)
+    }
+
+    fun isOnSameRowAs(fettuccineNode: SemanticsNodeInteraction): SemanticsMatcher {
+        return SemanticsMatcher(
+            "is on same row as $fettuccineNode"
+        ) { node ->
+            val otherNodeYPosition = fettuccineNode.fetchSemanticsNode().positionInWindow.y
+            val nodeYPosition = node.positionInWindow.y
+            abs(otherNodeYPosition - nodeYPosition) < 10f
+        }
     }
 
     //////////////////////
@@ -79,7 +91,7 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
         val rootView = activity.window.decorView.rootView
         println(rootView.hierarchyString())
         println()
-        println(composeTestRule.onRoot().printToString(Int.MAX_VALUE))
+        println(composeTestRule.onRoot(useUnmergedTree = true).printToString(Int.MAX_VALUE))
     }
 
     fun View.hierarchyString(tag: String ="| "): String {
