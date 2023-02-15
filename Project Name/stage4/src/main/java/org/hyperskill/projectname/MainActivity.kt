@@ -20,15 +20,16 @@ import org.example.playcomposecounter.ui.theme.PlayOrdersMenuTheme
 class MainActivity : ComponentActivity() {
 
     companion object {
-        private val listRecipesOnMenu = listOf(
-            "Fettuccine",
-            "Risotto",
-            "Gnocchi",
-            "Spaghetti",
-            "Lasagna",
-            "Steak Parmigiana"
+        private val recipesOnMenuToInitialStockMap = mapOf(
+            "Fettuccine" to 5,
+            "Risotto" to 6,
+            "Gnocchi" to 4,
+            "Spaghetti" to 3,
+            "Lasagna" to 5,
+            "Steak Parmigiana" to 2
         )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -39,8 +40,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column(Modifier.fillMaxSize()) {
                         Title(title = "Orders Menu")
-                        listRecipesOnMenu.forEach { recipeName ->
-                            OrderMenuItem(itemName = recipeName)
+                        recipesOnMenuToInitialStockMap.forEach { (recipeName, stockQuantity) ->
+                            OrderMenuItem(itemName = recipeName, stockQuantity = stockQuantity)
                         }
                     }
                 }
@@ -56,13 +57,13 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun OrderMenuItem(itemName: String) {
+    fun OrderMenuItem(itemName: String, stockQuantity: Int) {
         Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.Bottom) {
             var quantity by remember { mutableStateOf(0) }
 
             Text(
                 text = itemName,
-                color = if (quantity >= 5) Color.Red else Color.Black,
+                color = if (quantity >= stockQuantity) Color.Red else Color.Black,
                 fontSize = 24.sp
             )
 
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
 //                                if(quantity == 1)
 //                                    quantity++
 
-                    if (quantity < 5) {
+                    if (quantity < stockQuantity) {
 //                                    quantity += 2
                         quantity++
 

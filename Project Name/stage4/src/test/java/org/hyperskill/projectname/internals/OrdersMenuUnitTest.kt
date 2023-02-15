@@ -20,13 +20,14 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    val menuRecipesList = listOf(
-        "Fettuccine",
-        "Risotto",
-        "Gnocchi",
-        "Spaghetti",
-        "Lasagna",
-        "Steak Parmigiana"
+
+    val recipesOnMenuToInitialStockMap = mapOf(
+        "Fettuccine" to 5,
+        "Risotto" to 6,
+        "Gnocchi" to 4,
+        "Spaghetti" to 3,
+        "Lasagna" to 5,
+        "Steak Parmigiana" to 2
     )
 
     fun SemanticsNodeInteraction.assertTextStyle(block: (style: TextStyle) -> Unit ) {

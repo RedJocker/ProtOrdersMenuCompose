@@ -18,11 +18,13 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
     @Test
     fun test00_checkMenuItemAmountIncreases() {
+        // assumes min value on recipesOnMenuToInitialStockMap is 2
+
         composeTestRule.activityRule.scenario.onActivity { activity: Activity ->
             debugResearchPurposes(activity)
 
             composeTestRule.apply {
-                menuRecipesList.forEach { recipeName ->
+                recipesOnMenuToInitialStockMap.forEach { (recipeName, _) ->
                     val menuItemNode = onNodeWithText(
                         recipeName, substring = false, ignoreCase = false
                     )
@@ -53,13 +55,12 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
     @Test
     fun test01_checkMenuItemAmountIncreasesUpToLimitOnly() {
-        val limit = 5
 
         composeTestRule.activityRule.scenario.onActivity { activity: Activity ->
             debugResearchPurposes(activity)
 
             composeTestRule.apply {
-                menuRecipesList.forEach { recipeName ->
+                recipesOnMenuToInitialStockMap.forEach { (recipeName, stockQuantity) ->
                     val menuItemNode = onNodeWithText(
                         recipeName, substring = false, ignoreCase = false,
                     )
@@ -68,13 +69,13 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         .assertExists("$recipeName should have a sibling with text \"+\"")
                         .assertIsDisplayed()
 
-                    (1..10).forEach {
+                    (1..(stockQuantity * 2)).forEach {
                         plusNode.performClick()
-                        val expectAmount = if (it <= limit) it else limit
+                        val expectAmount = if (it <= stockQuantity) it else stockQuantity
                         siblings.filterToOne(hasText("$expectAmount"))
                             .assertExists(
                                 "After clicking plus the amount of $recipeName ordered should increase " +
-                                        "until limit is reached then it should remain"
+                                        "until stockQuantity is reached then it should remain"
                             )
                             .assertIsDisplayed()
                     }
@@ -90,32 +91,32 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
             debugResearchPurposes(activity)
 
             composeTestRule.apply {
-                menuRecipesList.forEach { recipeName ->
+                recipesOnMenuToInitialStockMap.forEach { (recipeName, stockQuantity) ->
                     val menuItemNode = onNodeWithText(
                         recipeName, substring = false, ignoreCase = false
                     )
 
-                    menuItemNode.assertTextStyle { style ->
-                        assertEquals(
-                            "While the amount ordered has not reached the quantity of " +
-                                    "$recipeName in stock keep showing $recipeName in black color",
-                            Color.Black,
-                            style.color
-                        )
-                    }
                     val siblings = menuItemNode.onSiblings().filter(isOnSameRowAs(menuItemNode))
                     val plusNode = siblings.filterToOne(hasText("+"))
                         .assertExists("$recipeName should have a sibling with text \"+\"")
                         .assertIsDisplayed()
 
-                    (1..10).forEach { _ ->
+                    (1..stockQuantity).forEach { _ ->
+                        menuItemNode.assertTextStyle { style ->
+                            assertEquals(
+                                "While the amount ordered has not reached the stockQuantity of " +
+                                        "$recipeName keep showing $recipeName in black color",
+                                Color.Black,
+                                style.color
+                            )
+                        }
                         plusNode.performClick()
                     }
 
                     menuItemNode.assertExists().assertIsDisplayed()
                     menuItemNode.assertTextStyle { style ->
                         assertEquals(
-                            "When the amount ordered has reached the quantity of $recipeName in stock " +
+                            "When the amount ordered has reached the stockQuantity of $recipeName " +
                                     "show $recipeName in red color",
                             Color.Red,
                             style.color
@@ -128,12 +129,13 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
     @Test
     fun test03_checkMenuItemAmountDecrease() {
+        // assumes min value on recipesOnMenuToInitialStockMap is 2
 
         composeTestRule.activityRule.scenario.onActivity { activity: Activity ->
             debugResearchPurposes(activity)
 
             composeTestRule.apply {
-                menuRecipesList.forEach { recipeName ->
+                recipesOnMenuToInitialStockMap.forEach { (recipeName, stockQuantity) ->
 
                     val menuItemNode = onNodeWithText(
                         recipeName, substring = false, ignoreCase = false
@@ -144,16 +146,16 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         .assertExists("$recipeName should have a sibling with text \"+\"")
                         .assertIsDisplayed()
 
-                    (1..10).forEach { _ ->
+                    (1..(stockQuantity * 2)).forEach { _ ->
                         plusNode.performClick()
                     }
 
                     menuItemNode.assertExists()
                     menuItemNode.assertIsDisplayed()
-                    siblings.filterToOne(hasText("5"))
+                    siblings.filterToOne(hasText("$stockQuantity"))
                         .assertExists(
-                            "After clicking plus more than the limit times the amount " +
-                                    "of $recipeName ordered should be equal to the limit"
+                            "After clicking plus more times than the stockQuantity the amount " +
+                                    "of $recipeName ordered should be equal to the stockQuantity"
                         )
                         .assertIsDisplayed()
 
@@ -163,7 +165,7 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
 
                     minusNode.performClick()
-                    siblings.filterToOne(hasText("4"))
+                    siblings.filterToOne(hasText("${stockQuantity - 1}"))
                         .assertExists(
                             "While the amount ordered is 5, after clicking minus " +
                                     "the amount of $recipeName ordered should decrease to 4"
@@ -171,7 +173,7 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         .assertIsDisplayed()
 
                     minusNode.performClick()
-                    siblings.filterToOne(hasText("3"))
+                    siblings.filterToOne(hasText("${stockQuantity - 2}"))
                         .assertExists(
                             "While the amount ordered is 4, after clicking minus " +
                                     "the amount of $recipeName ordered should decrease to 3"
@@ -189,7 +191,7 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
             debugResearchPurposes(activity)
 
             composeTestRule.apply {
-                menuRecipesList.forEach { recipeName ->
+                recipesOnMenuToInitialStockMap.forEach { (recipeName, stockQuantity) ->
 
                     val menuItemNode = onNodeWithText(
                         recipeName, substring = false, ignoreCase = false
@@ -216,26 +218,26 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         .assertExists("$recipeName should have a sibling with text \"+\"")
                         .assertIsDisplayed()
 
-                    (1..10).forEach { _ ->
+                    (1..(stockQuantity * 2)).forEach { _ ->
                         plusNode.performClick()
                     }
 
                     menuItemNode.assertExists()
                     menuItemNode.assertIsDisplayed()
-                    siblings.filterToOne(hasText("5"))
+                    siblings.filterToOne(hasText("$stockQuantity"))
                         .assertExists(
-                            "After clicking plus more than the limit times the amount " +
-                                    "of $recipeName ordered should be equal to the limit"
+                            "After clicking plus more times than the stockQuantity the amount" +
+                                    "of $recipeName ordered should be equal to the stockQuantity"
                         )
                         .assertIsDisplayed()
 
-                    (1..10).map { 5 - it }.forEach { i ->
+                    (1..(stockQuantity * 2)).map { stockQuantity - it }.forEach { i ->
                         val expectAmount = if (i > 0) i else 0
                         minusNode.performClick()
                         siblings.filterToOne(hasText("$expectAmount"))
                             .assertExists(
                                 "After clicking minus the amount of $recipeName ordered should decrease " +
-                                        "until zero is reached then it should remain"
+                                        "until zero is reached then it should remain zero"
                             )
                             .assertIsDisplayed()
                     }
@@ -251,27 +253,27 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
             debugResearchPurposes(activity)
 
             composeTestRule.apply {
-                menuRecipesList.forEach { recipeName ->
+                recipesOnMenuToInitialStockMap.forEach { (recipeName, stockQuantity) ->
 
                     val menuItemNode = onNodeWithText(
                         recipeName, substring = false, ignoreCase = false
                     )
 
-                    menuItemNode.assertTextStyle { style ->
-                        assertEquals(
-                            "While the amount ordered has not reached the quantity of " +
-                                    "$recipeName in stock keep showing $recipeName in black color",
-                            Color.Black,
-                            style.color
-                        )
-                    }
                     val siblings = menuItemNode.onSiblings().filter(isOnSameRowAs(menuItemNode))
 
                     val plusNode = siblings.filterToOne(hasText("+"))
                         .assertExists("$recipeName should have a sibling with text \"+\"")
                         .assertIsDisplayed()
 
-                    (1..10).forEach { _ ->
+                    (1..stockQuantity).forEach { _ ->
+                        menuItemNode.assertTextStyle { style ->
+                            assertEquals(
+                                "While the amount ordered has not reached the stockQuantity of " +
+                                        "$recipeName keep showing $recipeName in black color",
+                                Color.Black,
+                                style.color
+                            )
+                        }
                         plusNode.performClick()
                     }
 
