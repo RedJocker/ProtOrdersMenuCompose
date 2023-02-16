@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                                 onClick = {
                                     val orderedRecipesString =
                                         mapQuantitiesOrdered.mapNotNull { (recipeName, quantity) ->
-                                            if(quantity > 0) "${recipeName}: $quantity" else null
+                                            if(quantity > 0) "==> ${recipeName}: $quantity" else null
                                         }.joinToString(separator = "\n")
                                     if (orderedRecipesString.isNotBlank()) {
                                         mapStock = mapStock.mapValues { (recipeName, stockAmount) ->
