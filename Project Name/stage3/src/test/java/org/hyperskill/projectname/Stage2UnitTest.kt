@@ -1,20 +1,13 @@
 package org.hyperskill.projectname
 
 import android.app.Activity
-import android.view.View
-import android.view.ViewGroup
-import androidx.compose.ui.semantics.SemanticsActions
-import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTextExactly
 import androidx.compose.ui.unit.sp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hyperskill.projectname.internals.AbstractUnitTest
 import org.hyperskill.projectname.internals.OrdersMenuUnitTest
 import org.junit.Assert.assertEquals
 import org.junit.FixMethodOrder
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -34,19 +27,19 @@ class Stage2UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
             composeTestRule.apply {
 
-                val titleNode = onNodeWithText(
-                    "Orders Menu", substring = false, ignoreCase = false
-                )
-                titleNode.assertExists("There should exist a title node with text \"Orders Menu\"")
-                titleNode.assertIsDisplayed()
+                onNode(hasTextExactly("Orders Menu")).apply {
+                    assertExists("There should exist a title node with text \"Orders Menu\"")
+                    assertIsDisplayed()
 
-                titleNode.assertTextStyle { style ->
-                    assertEquals("The title should have size 48sp", 48.sp, style.fontSize)
+                    assertTextStyle { style ->
+                        assertEquals("The title should have size 48sp", 48.sp, style.fontSize)
+                    }
+
+                    assertCenter { rootCenter: Float, nodeCenter: Float ->
+                        assertEquals("Title should be centered", rootCenter, nodeCenter, 10f)
+                    }
                 }
 
-                titleNode.assertCenter { rootCenter: Float, nodeCenter: Float ->
-                    assertEquals("Title should be centered", rootCenter, nodeCenter, 10f)
-                }
             }
         }
     }
@@ -58,23 +51,22 @@ class Stage2UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
             composeTestRule.apply {
 
-                val fettuccineNode = onNodeWithText(
-                    "Fettuccine", substring = false, ignoreCase = false
-                )
-                fettuccineNode.assertExists("There should exist a title node with text \"Fettuccine\"")
-                fettuccineNode.assertIsDisplayed()
+                onNode(hasTextExactly("Fettuccine")).apply {
+                    assertExists("There should exist a title node with text \"Fettuccine\"")
+                    assertIsDisplayed()
 
-                fettuccineNode.assertTextStyle { style ->
-                    assertEquals("Fettuccine should have size 24sp", 24.sp, style.fontSize)
-                }
+                    assertTextStyle { style ->
+                        assertEquals("Fettuccine should have size 24sp", 24.sp, style.fontSize)
+                    }
 
-                fettuccineNode.assertStart { rootStart: Float, nodeStart: Float ->
-                    assertEquals(
-                        "Fettuccine should be displayed on start",
-                        rootStart,
-                        nodeStart,
-                        10f
-                    )
+                    assertStart { rootStart: Float, nodeStart: Float ->
+                        assertEquals(
+                            "Fettuccine should be displayed on start",
+                            rootStart,
+                            nodeStart,
+                            10f
+                        )
+                    }
                 }
             }
         }

@@ -26,18 +26,18 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                     "Fettuccine", substring = false, ignoreCase = false
                 )
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
-                val plusNode = siblings.filterToOne(hasText("+"))
+                val plusNode = siblings.filterToOne(hasTextExactly("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
 
                 plusNode.performClick()
-                siblings.filterToOne(hasText("1"))
+                siblings.filterToOne(hasTextExactly("1"))
                     .assertExists("After clicking plus for the first time " +
                             "the amount of Fettuccine ordered should increase to 1")
                     .assertIsDisplayed()
 
                 plusNode.performClick()
-                siblings.filterToOne(hasText("2"))
+                siblings.filterToOne(hasTextExactly("2"))
                     .assertExists("After clicking plus for the second time " +
                             "the amount of Fettuccine ordered should increase to 2")
                     .assertIsDisplayed()
@@ -57,14 +57,14 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                     "Fettuccine", substring = false, ignoreCase = false,
                 )
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
-                val plusNode = siblings.filterToOne(hasText("+"))
+                val plusNode = siblings.filterToOne(hasTextExactly("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
 
                 (1..10).forEach {
                     plusNode.performClick()
                     val expectAmount = if (it <= limit) it else limit
-                    siblings.filterToOne(hasText("$expectAmount"))
+                    siblings.filterToOne(hasTextExactly("$expectAmount"))
                         .assertExists("After clicking plus the amount of Fettuccine ordered should increase " +
                                 "until limit is reached then it should remain")
                         .assertIsDisplayed()
@@ -92,7 +92,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                     )
                 }
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
-                val plusNode = siblings.filterToOne(hasText("+"))
+                val plusNode = siblings.filterToOne(hasTextExactly("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
 
@@ -125,7 +125,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                 )
 
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
-                val plusNode = siblings.filterToOne(hasText("+"))
+                val plusNode = siblings.filterToOne(hasTextExactly("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
 
@@ -135,24 +135,24 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                 fettuccineNode.assertExists()
                 fettuccineNode.assertIsDisplayed()
-                siblings.filterToOne(hasText("5"))
+                siblings.filterToOne(hasTextExactly("5"))
                     .assertExists("After clicking plus more than the limit times the amount " +
                             "of Fettuccine ordered should be equal to the limit")
                     .assertIsDisplayed()
 
-                val minusNode = siblings.filterToOne(hasText("-"))
+                val minusNode = siblings.filterToOne(hasTextExactly("-"))
                     .assertExists("Fettuccine should have a sibling with text \"-\"")
                     .assertIsDisplayed()
 
 
                 minusNode.performClick()
-                siblings.filterToOne(hasText("4"))
+                siblings.filterToOne(hasTextExactly("4"))
                     .assertExists("While the amount ordered is 5, after clicking minus " +
                             "the amount of Fettuccine ordered should decrease to 4")
                     .assertIsDisplayed()
 
                 minusNode.performClick()
-                siblings.filterToOne(hasText("3"))
+                siblings.filterToOne(hasTextExactly("3"))
                     .assertExists("While the amount ordered is 4, after clicking minus " +
                             "the amount of Fettuccine ordered should decrease to 3")
                     .assertIsDisplayed()
@@ -172,21 +172,21 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                 )
 
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
-                val minusNode = siblings.filterToOne(hasText("-"))
+                val minusNode = siblings.filterToOne(hasTextExactly("-"))
                     .assertExists("Fettuccine should have a sibling with text \"-\"")
                     .assertIsDisplayed()
 
-                siblings.filterToOne(hasText("0"))
+                siblings.filterToOne(hasTextExactly("0"))
                     .assertExists("The initial amount of Fettuccine ordered should be zero")
                     .assertIsDisplayed()
 
                 minusNode.performClick()
-                siblings.filterToOne(hasText("0"))
+                siblings.filterToOne(hasTextExactly("0"))
                     .assertExists("When the Fettuccine ordered amount is zero " +
                             "and minus is clicked the amount should remain zero")
                     .assertIsDisplayed()
 
-                val plusNode = siblings.filterToOne(hasText("+"))
+                val plusNode = siblings.filterToOne(hasTextExactly("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
 
@@ -196,7 +196,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                 fettuccineNode.assertExists()
                 fettuccineNode.assertIsDisplayed()
-                siblings.filterToOne(hasText("5"))
+                siblings.filterToOne(hasTextExactly("5"))
                     .assertExists("After clicking plus more than the limit times the amount " +
                             "of Fettuccine ordered should be equal to the limit")
                     .assertIsDisplayed()
@@ -204,7 +204,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                 (1..10).map { 5 - it }.forEach { i ->
                     val expectAmount = if(i > 0 ) i else 0
                     minusNode.performClick()
-                    siblings.filterToOne(hasText("$expectAmount"))
+                    siblings.filterToOne(hasTextExactly("$expectAmount"))
                         .assertExists("After clicking minus the amount of Fettuccine ordered should decrease " +
                                 "until zero is reached then it should remain")
                         .assertIsDisplayed()
@@ -234,7 +234,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                 }
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
 
-                val plusNode = siblings.filterToOne(hasText("+"))
+                val plusNode = siblings.filterToOne(hasTextExactly("+"))
                     .assertExists("Fettuccine should have a sibling with text \"+\"")
                     .assertIsDisplayed()
 
@@ -253,7 +253,7 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                 }
 
 
-                val minusNode = siblings.filterToOne(hasText("-"))
+                val minusNode = siblings.filterToOne(hasTextExactly("-"))
                     .assertExists("Fettuccine should have a sibling with text \"-\"")
                     .assertIsDisplayed()
 
