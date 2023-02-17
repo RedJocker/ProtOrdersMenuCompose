@@ -5,17 +5,19 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.example.playcomposecounter.ui.theme.PlayOrdersMenuTheme
+import org.hyperskill.projectname.composables.MakeOrderButton
+import org.hyperskill.projectname.composables.OrderMenuItem
+import org.hyperskill.projectname.composables.Title
 
 class MainActivity : ComponentActivity() {
 
@@ -72,35 +74,23 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        Row(horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                            Button(
-                                onClick = {
-                                    val orderedRecipesString =
-                                        mapQuantitiesOrdered.mapNotNull { (recipeName, quantity) ->
-                                            if(quantity > 0) "==> ${recipeName}: $quantity" else null
-                                        }.joinToString(separator = "\n")
-                                    if (orderedRecipesString.isNotBlank()) {
-                                        mapStock = mapStock.mapValues { (recipeName, stockAmount) ->
-                                            stockAmount - mapQuantitiesOrdered[recipeName]!!
-                                        }
-
-                                        mapQuantitiesOrdered = mapQuantitiesOrdered.mapValues { 0 }
-                                        val message = "Ordered:\n$orderedRecipesString"
-                                        showToast(message)
+                        MakeOrderButton(
+                            onClick = {
+                                val orderedRecipesString =
+                                    mapQuantitiesOrdered.mapNotNull { (recipeName, quantity) ->
+                                        if (quantity > 0) "==> ${recipeName}: $quantity" else null
+                                    }.joinToString(separator = "\n")
+                                if (orderedRecipesString.isNotBlank()) {
+                                    mapStock = mapStock.mapValues { (recipeName, stockAmount) ->
+                                        stockAmount - mapQuantitiesOrdered[recipeName]!!
                                     }
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = Color.Black,
-                                    contentColor = Color.White
-                                )
-                            ) {
-                                Text(
-                                    text = "Make Order",
-                                    fontSize = 24.sp
-                                )
+
+                                    mapQuantitiesOrdered = mapQuantitiesOrdered.mapValues { 0 }
+                                    val message = "Ordered:\n$orderedRecipesString"
+                                    showToast(message)
+                                }
                             }
-                        }
+                        )
                     }
                 }
             }
@@ -109,46 +99,5 @@ class MainActivity : ComponentActivity() {
 
     private fun Activity.showToast(message: String) {
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
-    }
-
-    @Composable
-    fun Title(title: String) {
-        Row(Modifier.fillMaxWidth(), Arrangement.Center) {
-            Text(title, fontSize = 48.sp)
-        }
-    }
-
-    @Composable
-    fun OrderMenuItem(itemName: String,
-                      quantityOrdered: Int,
-                      stockLimit: Int,
-                      onAddAmountOrdered: (currentQuantity: Int) -> Unit,
-                      onDecreaseAmountOrdered: (currentQuantity: Int) -> Unit) {
-
-        Row(Modifier.fillMaxWidth(), Arrangement.Start, Alignment.Bottom) {
-
-            Text(
-                text = itemName,
-                color = if (quantityOrdered >= stockLimit) Color.Red else Color.Black,
-                fontSize = 24.sp
-            )
-
-            Text(text = "+", fontSize = 24.sp, modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .clickable {
-                    onAddAmountOrdered(quantityOrdered)
-                }
-                .testTag(itemName))
-
-
-            Text(text = "${quantityOrdered}", fontSize = 24.sp, modifier = Modifier.testTag(itemName))
-
-            Text(text = "-", fontSize = 24.sp, modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .clickable {
-                    onDecreaseAmountOrdered(quantityOrdered)
-                }
-            )
-        }
     }
 }
