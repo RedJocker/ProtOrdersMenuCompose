@@ -3,7 +3,11 @@ package org.hyperskill.projectname.internals
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -20,10 +24,18 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
+    val recipesOnMenuToInitialStockMap = mapOf(
+        "Fettuccine" to 5,
+        "Risotto" to 6,
+        "Gnocchi" to 4,
+        "Spaghetti" to 3,
+        "Lasagna" to 5,
+        "Steak Parmigiana" to 2
+    )
+
     fun SemanticsNodeInteraction.assertTextStyle(block: (style: TextStyle) -> Unit ) {
         val semanticsNode = fetchSemanticsNode()
         val config = semanticsNode.config
-        //val text = config[SemanticsProperties.Text].first().text
         val list = mutableListOf<TextLayoutResult>()
         config[SemanticsActions.GetTextLayoutResult].action?.invoke(list) // populates list
         block.invoke(list[0].layoutInput.style)
@@ -75,14 +87,30 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
         block(rootStart, nodeStart)
     }
 
-    fun isOnSameRowAs(fettuccineNode: SemanticsNodeInteraction): SemanticsMatcher {
+    fun isOnSameRowAs(otherNode: SemanticsNodeInteraction): SemanticsMatcher {
         return SemanticsMatcher(
-            "is on same row as $fettuccineNode"
+            "is on same row as ${otherNode.printToString()
+                .substringAfter("\n")
+                .replace('\n', ' ')}"
         ) { node ->
-            val otherNodeYPosition = fettuccineNode.fetchSemanticsNode().positionInWindow.y
+            val otherNodeYPosition = otherNode.fetchSemanticsNode().positionInWindow.y
             val nodeYPosition = node.positionInWindow.y
             abs(otherNodeYPosition - nodeYPosition) < 10f
         }
+    }
+
+    fun isButton(): SemanticsMatcher {
+        return SemanticsMatcher(
+            "has role Role.Button"
+        ) { node ->
+            val config = node.config
+            val role = config.getOrNull(SemanticsProperties.Role)
+            role == Role.Button
+        }
+    }
+
+    fun Color.rgbEquals(other: Color): Boolean {
+        return this.red == other.red && this.green == other.green && this.blue == other.blue
     }
 
     //////////////////////
