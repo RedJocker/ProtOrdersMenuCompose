@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hyperskill.projectname.internals.OrdersMenuUnitTest
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,11 +84,10 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                     "Fettuccine", substring = false, ignoreCase = false
                 )
                 fettuccineNode.assertTextStyle { style ->
-                    assertEquals(
+                    assertTrue(
                         "While the amount ordered has not reached the quantity of " +
                                 "Fettuccine in stock keep showing Fettuccine in black color",
-                        Color.Black,
-                        style.color
+                        style.color.rgbEquals(Color.Black)
                     )
                 }
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
@@ -102,11 +101,10 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                 fettuccineNode.assertExists().assertIsDisplayed()
                 fettuccineNode.assertTextStyle { style ->
-                    assertEquals(
+                    assertTrue(
                         "When the amount ordered has reached the quantity of fettuccine in stock " +
                                 "show Fettuccine in red color",
-                        Color.Red,
-                        style.color
+                        style.color.rgbEquals(Color.Red)
                     )
                 }
             }
@@ -225,11 +223,10 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                 )
 
                 fettuccineNode.assertTextStyle { style ->
-                    assertEquals(
+                    assertTrue(
                         "While the amount ordered has not reached the quantity of " +
                                 "Fettuccine in stock keep showing Fettuccine in black color",
-                        Color.Black,
-                        style.color
+                        style.color.rgbEquals(Color.Black)
                     )
                 }
                 val siblings = fettuccineNode.onSiblings().filter(isOnSameRowAs(fettuccineNode))
@@ -244,11 +241,10 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                 fettuccineNode.assertExists().assertIsDisplayed()
                 fettuccineNode.assertTextStyle { style ->
-                    assertEquals(
+                    assertTrue(
                         "When the amount ordered has reached the quantity of fettuccine in stock " +
                                 "show Fettuccine in red color",
-                        Color.Red,
-                        style.color
+                        style.color.rgbEquals(Color.Red)
                     )
                 }
 
@@ -263,11 +259,10 @@ class Stage3UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                 fettuccineNode.assertExists().assertIsDisplayed()
                 fettuccineNode.assertTextStyle { style ->
-                    assertEquals(
+                    assertTrue(
                         "When Fettuccine color is red and minus is clicked " +
                                 "then Fettuccine color should become black",
-                        Color.Black,
-                        style.color
+                        style.color.rgbEquals(Color.Black)
                     )
                 }
             }

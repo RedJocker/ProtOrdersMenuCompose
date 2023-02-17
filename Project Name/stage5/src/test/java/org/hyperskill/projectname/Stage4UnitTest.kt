@@ -6,6 +6,7 @@ import androidx.compose.ui.test.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hyperskill.projectname.internals.OrdersMenuUnitTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -103,11 +104,10 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                     (1..stockQuantity).forEach { _ ->
                         menuItemNode.assertTextStyle { style ->
-                            assertEquals(
+                            assertTrue(
                                 "While the amount ordered has not reached the stockQuantity of " +
                                         "$recipeName keep showing $recipeName in black color",
-                                Color.Black,
-                                style.color
+                                style.color.rgbEquals(Color.Black)
                             )
                         }
                         plusNode.performClick()
@@ -115,11 +115,10 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                     menuItemNode.assertExists().assertIsDisplayed()
                     menuItemNode.assertTextStyle { style ->
-                        assertEquals(
+                        assertTrue(
                             "When the amount ordered has reached the stockQuantity of $recipeName " +
                                     "show $recipeName in red color",
-                            Color.Red,
-                            style.color
+                            style.color.rgbEquals(Color.Red)
                         )
                     }
                 }
@@ -267,11 +266,10 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                     (1..stockQuantity).forEach { _ ->
                         menuItemNode.assertTextStyle { style ->
-                            assertEquals(
+                            assertTrue(
                                 "While the amount ordered has not reached the stockQuantity of " +
                                         "$recipeName keep showing $recipeName in black color",
-                                Color.Black,
-                                style.color
+                                style.color.rgbEquals(Color.Black)
                             )
                         }
                         plusNode.performClick()
@@ -279,11 +277,10 @@ class Stage4UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
 
                     menuItemNode.assertExists().assertIsDisplayed()
                     menuItemNode.assertTextStyle { style ->
-                        assertEquals(
+                        assertTrue(
                             "When the amount ordered has reached the quantity of $recipeName in stock " +
                                     "show $recipeName in red color",
-                            Color.Red,
-                            style.color
+                            style.color.rgbEquals(Color.Red)
                         )
                     }
 
