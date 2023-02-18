@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -96,6 +97,18 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
             val otherNodeYPosition = otherNode.fetchSemanticsNode().positionInWindow.y
             val nodeYPosition = node.positionInWindow.y
             abs(otherNodeYPosition - nodeYPosition) < 10f
+        }
+    }
+
+    fun isBelow(otherNode: SemanticsNodeInteraction): SemanticsMatcher {
+        return SemanticsMatcher(
+            "is on bellow ${otherNode.printToString()
+                .substringAfter("\n")
+                .replace('\n', ' ')}"
+        ) { node ->
+            val nodeBellowY = node.layoutInfo.coordinates.boundsInWindow().top
+            val nodeAboveY = otherNode.fetchSemanticsNode().layoutInfo.coordinates.boundsInWindow().bottom
+            nodeBellowY >= nodeAboveY
         }
     }
 

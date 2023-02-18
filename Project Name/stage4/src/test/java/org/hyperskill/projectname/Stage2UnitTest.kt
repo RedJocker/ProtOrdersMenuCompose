@@ -1,6 +1,7 @@
 package org.hyperskill.projectname
 
 import android.app.Activity
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTextExactly
 import androidx.compose.ui.unit.sp
@@ -71,4 +72,26 @@ class Stage2UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
             }
         }
     }
+
+    @Test
+    fun test02_checkTitleIsAboveFettuccine() {
+        composeTestRule.activityRule.scenario.onActivity { activity : Activity ->
+            debugResearchPurposes(activity)
+
+            composeTestRule.apply {
+
+                val title = onNode(hasTextExactly("Orders Menu"))
+                    .assertExists()
+                    .assertIsDisplayed()
+
+                onNode(hasTextExactly("Fettuccine")).apply {
+                    assertExists("There should exist a title node with text \"Fettuccine\"")
+                    assertIsDisplayed()
+                        .assert(isBelow(title))
+                }
+            }
+        }
+    }
 }
+
+
