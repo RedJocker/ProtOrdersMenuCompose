@@ -58,14 +58,7 @@ class Stage2UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         assertEquals("Fettuccine should have size 24sp", 24.sp, style.fontSize)
                     }
 
-                    assertStart { rootStart: Float, nodeStart: Float ->
-                        assertEquals(
-                            "Fettuccine should be displayed on start",
-                            rootStart,
-                            nodeStart,
-                            10f
-                        )
-                    }
+                    assert(isTextOnWindowStart()) { "Fettuccine should be displayed at start" }
                 }
             }
         }

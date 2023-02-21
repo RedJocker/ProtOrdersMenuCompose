@@ -16,6 +16,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.LayoutDirection
 import org.hyperskill.projectname.MainActivity
 import org.junit.Rule
 import kotlin.math.abs
@@ -40,52 +41,6 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
         val list = mutableListOf<TextLayoutResult>()
         config[SemanticsActions.GetTextLayoutResult].action?.invoke(list) // populates list
         block.invoke(list[0].layoutInput.style)
-    }
-
-    fun SemanticsNodeInteraction.assertCenter(block: (rootCenter: Float, nodeCenter: Float) -> Unit ) {
-        val rootCenter = composeTestRule.onRoot()
-            .fetchSemanticsNode()
-            .boundsInWindow
-            .center
-            .x
-
-        val nodeCenter = fetchSemanticsNode()
-            .boundsInWindow
-            .center
-            .x
-
-        block(rootCenter, nodeCenter)
-    }
-
-    fun SemanticsNodeInteraction.assertStart(block: (rootStart: Float, nodeStart: Float) -> Unit ) {
-        val config = composeTestRule.activity.resources.configuration
-
-
-        val (rootStart, nodeStart) = if(config.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-            val rootStart = composeTestRule.onRoot()
-                .fetchSemanticsNode()
-                .boundsInWindow
-                .right
-
-            val nodeStart = fetchSemanticsNode()
-                .boundsInWindow
-                .right
-
-            rootStart to nodeStart
-        } else {
-            val rootStart = composeTestRule.onRoot()
-                .fetchSemanticsNode()
-                .boundsInWindow
-                .left
-
-            val nodeStart = fetchSemanticsNode()
-                .boundsInWindow
-                .left
-
-            rootStart to nodeStart
-        }
-
-        block(rootStart, nodeStart)
     }
 
     fun isTextHorizontallyCenteredOnWindow(toleranceMargin: Float = 10f): SemanticsMatcher {
@@ -117,6 +72,43 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
             val textHorizontalCenter = node.boundsInWindow.left + textLeft + (textDiff / 2.0f)
 
             abs(textHorizontalCenter - rootHorizontalCenter) < toleranceMargin
+        }
+    }
+
+    fun isTextOnWindowStart(toleranceMargin: Float = 15f): SemanticsMatcher {
+        return SemanticsMatcher("is text on window start") { node ->
+            val root = composeTestRule.onRoot().fetchSemanticsNode()
+
+            val rootStart = if(node.layoutInfo.layoutDirection == LayoutDirection.Rtl) {
+                root.boundsInWindow.right
+            } else {
+                root.boundsInWindow.left
+            }
+
+            val config = node.config
+            val list = mutableListOf<TextLayoutResult>()
+            val getTextLayoutResult = config.getOrNull(SemanticsActions.GetTextLayoutResult)
+                ?: throw IllegalArgumentException("isTextCenteredOnWindow expects a Text node")
+            getTextLayoutResult.action?.invoke(list) // populates list
+            val textLayoutResult = list.getOrNull(0)
+                ?: return@SemanticsMatcher false
+
+            val textStart = if(node.layoutInfo.layoutDirection == LayoutDirection.Rtl) {
+                val textRight = (0 until textLayoutResult.lineCount).fold(Float.NEGATIVE_INFINITY) { acc, cur ->
+                    val lineEnd = textLayoutResult.getLineRight(cur)
+                    if (lineEnd > acc) lineEnd else acc
+                } // value relative to node
+                val offset = node.boundsInWindow.width - textRight
+                node.boundsInWindow.right - offset
+            } else {
+                val textLeft = (0 until textLayoutResult.lineCount).fold(Float.POSITIVE_INFINITY) { acc, cur ->
+                    val lineStart = textLayoutResult.getLineLeft(cur)
+                    if (lineStart < acc) lineStart else acc
+                } // value relative to node
+                node.boundsInWindow.left + textLeft
+            }
+
+            abs(rootStart - textStart) < toleranceMargin
         }
     }
 
