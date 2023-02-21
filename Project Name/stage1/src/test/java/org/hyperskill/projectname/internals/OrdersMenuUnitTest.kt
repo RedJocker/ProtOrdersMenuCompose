@@ -88,6 +88,38 @@ open class OrdersMenuUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
         block(rootStart, nodeStart)
     }
 
+    fun isTextHorizontallyCenteredOnWindow(toleranceMargin: Float = 10f): SemanticsMatcher {
+        return SemanticsMatcher("is text horizontally centered on window") { node ->
+            val rootNode = composeTestRule.onRoot().fetchSemanticsNode()
+            val rootHorizontalCenter = rootNode.boundsInWindow.center.x
+
+            val config = node.config
+            val list = mutableListOf<TextLayoutResult>()
+
+            val getTextLayoutResult = config.getOrNull(SemanticsActions.GetTextLayoutResult)
+                ?: throw IllegalArgumentException("isTextCenteredOnWindow expects a Text node")
+
+            getTextLayoutResult.action?.invoke(list) // populates list
+            val textLayoutResult = list.getOrNull(0)
+                ?: return@SemanticsMatcher false
+
+            val textLeft = (0 until textLayoutResult.lineCount).fold(Float.POSITIVE_INFINITY) { acc, cur ->
+                val lineStart = textLayoutResult.getLineLeft(cur)
+                if (lineStart < acc) lineStart else acc
+            } // value relative to node
+
+            val textRight = (0 until textLayoutResult.lineCount).fold(Float.NEGATIVE_INFINITY) { acc, cur ->
+                val lineEnd = textLayoutResult.getLineRight(cur)
+                if (lineEnd > acc) lineEnd else acc
+            } // value relative to node
+
+            val textDiff = textRight - textLeft // assuming right is greater or equal than left
+            val textHorizontalCenter = node.boundsInWindow.left + textLeft + (textDiff / 2.0f)
+
+            abs(textHorizontalCenter - rootHorizontalCenter) < toleranceMargin
+        }
+    }
+
     fun isOnSameRowAs(otherNode: SemanticsNodeInteraction): SemanticsMatcher {
         return SemanticsMatcher(
             "is on same row as ${otherNode.printToString()

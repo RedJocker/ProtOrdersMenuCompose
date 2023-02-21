@@ -36,9 +36,7 @@ class Stage2UnitTest : OrdersMenuUnitTest<MainActivity>(MainActivity::class.java
                         assertEquals("The title should have size 48sp", 48.sp, style.fontSize)
                     }
 
-                    assertCenter { rootCenter: Float, nodeCenter: Float ->
-                        assertEquals("Title should be centered", rootCenter, nodeCenter, 10f)
-                    }
+                    assert(isTextHorizontallyCenteredOnWindow()) { "Title should be centered" }
                 }
 
             }
